@@ -6,6 +6,11 @@ About
 -----
 This repository contains the in-world board of the Second Life Shinto shrine register (SLSR).
 
+Image sources
+-------------
+* `kempas-wood-texture-floor-panel-stock-photo-5.jpg`: http://ambut.distributorsusukambingetawa.org/images-stock-textures.html
+* `2create_wood_0014.jpg`: http://www.supertextures.co.uk/wood
+
 License
 -------
 This project is free software under the terms of the GNU General Public License v3 as published by the Free Software Foundation.
