@@ -1,5 +1,5 @@
 // Configuration
-string VERSION = "2.4.0";
+string VERSION = "2.5.0";
 string SERVER = "slsr.org";
 integer USE_SSL = TRUE;
 string DEFAULT_SECTION = "random";
@@ -18,7 +18,7 @@ string generateURL(string section) {
     string protocol = "http";
     if (USE_SSL) protocol = "https";
     if (section == "") section = DEFAULT_SECTION;
-    string url = protocol + "://" + SERVER + "/" + section + "?client=" + (string) ID + "&version=" + VERSION;
+    string url = protocol + "://" + SERVER + "/" + section + "?client=" + (string) ID + "&version=" + VERSION + "&location=" + getLocation();
     if (DEBUG_MODE_ENABLED) llInstantMessage(llGetOwner(), url);
     return url;
 }
@@ -41,6 +41,15 @@ load(string section) {
             PRIM_MEDIA_AUTO_PLAY, TRUE
         ]
     );
+}
+
+/**
+ * Returns location.
+ * @return Location.
+ */
+string getLocation() {
+    vector position = llGetPos();
+    return llGetRegionName() + "/" + (string) llRound(position.x) + "/" + (string) llRound(position.y) + "/" + (string) llRound(position.z);
 }
 
 /**
