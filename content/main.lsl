@@ -1,5 +1,5 @@
 // Configuration
-string VERSION = "2.5.0";
+string VERSION = "2.5.1";
 string SERVER = "slsr.org";
 integer USE_SSL = TRUE;
 string DEFAULT_SECTION = "random";
@@ -46,10 +46,11 @@ load(string section) {
 /**
  * Returns location.
  * @return Location.
+ * @version 1.0.1
  */
 string getLocation() {
     vector position = llGetPos();
-    return llGetRegionName() + "/" + (string) llRound(position.x) + "/" + (string) llRound(position.y) + "/" + (string) llRound(position.z);
+    return llEscapeURL(llGetRegionName()) + "/" + (string) llRound(position.x) + "/" + (string) llRound(position.y) + "/" + (string) llRound(position.z);
 }
 
 /**
