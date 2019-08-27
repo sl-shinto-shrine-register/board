@@ -1,5 +1,5 @@
-// Configuration
-string VERSION = "2.5.1";
+// Configuration.
+string VERSION = "2.6.0";
 string SERVER = "slsr.org";
 integer USE_SSL = TRUE;
 string DEFAULT_SECTION = "random";
@@ -8,6 +8,13 @@ integer ID = 1;
 integer SCREEN_WIDTH = 1080;
 integer SCREEN_HEIGHT = 1920;
 integer SCREEN_FACE = 3;
+string VERSION_URL = "https://api.github.com/repos/sl-shinto-shrine-register/board/tags";
+string BUY_LINK = "https://marketplace.secondlife.com/p/Shrine-register-board/17914344";
+string VERSION_OUTDATED_TEXT = "New version available. Please replace as soon as possible!";
+
+// Internal states.
+key httpVersionRequestID;
+string lastVersionCheck;
 
 /**
  * Generates URL.
@@ -28,6 +35,7 @@ string generateURL(string section) {
  * @param section Section name.
  */
 load(string section) {
+    requestVersionCheck();
     string url = generateURL(section);
     llSetPrimMediaParams(
         SCREEN_FACE,
@@ -63,6 +71,34 @@ string getClickedSection() {
 }
 
 /**
+ * Requests a version check.
+ */
+requestVersionCheck() {
+    httpVersionRequestID = llHTTPRequest(
+        VERSION_URL,
+        [
+            HTTP_METHOD, "GET",
+            HTTP_MIMETYPE, "application/json"
+        ],
+        ""
+    );
+}
+
+/**
+ * Checks if the current version is outdated by given JSON data and sends a notification to the owner, if so.
+ * @param json JSON data.
+ */
+checkVersion(string json) {
+    string currentDate = llGetDate();
+    if (lastVersionCheck != currentDate) {
+        string latestVersion = llDeleteSubString(llJsonGetValue(json, [0, "name"]), 0, 0);
+        if (DEBUG_MODE_ENABLED) llInstantMessage(llGetOwner(), "Latest version: " + latestVersion);
+        if (latestVersion != VERSION) llInstantMessage(llGetOwner(), VERSION_OUTDATED_TEXT + "\n" + BUY_LINK);
+        lastVersionCheck = currentDate;
+    }
+}
+
+/**
  * States.
  */
 default {
@@ -79,5 +115,16 @@ default {
      */
     touch_start(integer total_number) {
         load(getClickedSection());
+    }
+
+    /**
+     * HTTP response event.
+     * @param request_id Matches return from llHTTPRequest.
+     * @param status HTTP status code (like 404 or 200).
+     * @param metadata List of HTTP_* constants and attributes.
+     * @param body Response body content.
+     */
+    http_response(key request_id, integer status, list metadata, string body) {
+        if ((request_id == httpVersionRequestID) && (status == 200)) checkVersion(body);
     }
 }
