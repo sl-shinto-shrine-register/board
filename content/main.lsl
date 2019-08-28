@@ -1,5 +1,5 @@
 // Configuration.
-string VERSION = "2.6.1";
+string VERSION = "2.7.0";
 string SERVER = "slsr.org";
 integer USE_SSL = TRUE;
 string DEFAULT_SECTION = "random";
@@ -11,6 +11,7 @@ integer SCREEN_FACE = 3;
 string VERSION_URL = "https://api.github.com/repos/sl-shinto-shrine-register/board/tags";
 string BUY_LINK = "https://marketplace.secondlife.com/p/Shrine-register-board/17914344";
 string VERSION_OUTDATED_TEXT = "New version available. Please replace as soon as possible!";
+string INFO_TEXT = "Please join our group secondlife:///app/group/1e87fa6c-7a9f-5a54-602c-149606623147/about or visit our homepage http://www.slsr.org";
 
 // Internal states.
 key httpVersionRequestID;
@@ -99,6 +100,17 @@ checkVersion(string json) {
 }
 
 /**
+ * Sends a info text to the agents.
+ * @param numberOfAgents Number of agents detected touching during the last clock cycle.
+ */
+sendInfoText(integer numberOfAgents) {
+    integer number;
+    do {
+        llInstantMessage(llDetectedKey(number), INFO_TEXT);
+    } while (numberOfAgents > ++number);
+}
+
+/**
  * States.
  */
 default {
@@ -115,7 +127,11 @@ default {
      */
     touch_start(integer total_number) {
         string section = getClickedSection();
-        if (section != "") load(section);
+        if (section == "") {
+            sendInfoText(total_number);
+        } else {
+            load(section);
+        }
     }
 
     /**
