@@ -5,6 +5,7 @@ In-world board of the Second Life Shinto shrine register (SLSR)
 About
 -----
 This repository contains the in-world board of the Second Life Shinto shrine register (SLSR).
+**[Get it from SL Marketplace](https://marketplace.secondlife.com/p/Shrine-register-board/17914344)**
 ![Board](screenshot.png)
 
 Image sources
